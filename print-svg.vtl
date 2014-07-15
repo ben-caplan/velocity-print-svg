@@ -1,0 +1,46 @@
+#if( $request.getServerName().contains('stag.') )##
+	#set( $_domain = 'stag.' )##
+#elseif( $request.getServerName().contains('dev.') )##
+	#set( $_domain = 'dev.' )##
+#end##
+#set( $knownSvgList = {
+	'name' : "/path/to/file",
+	'name2' : "/path/to/file"
+} )##
+#macro( printSVG $svg $attributesObject  )##
+#if( $UtilMethods.isSet($svg) )##
+## CHECK TO SEE IF $svg IS IN $knownSvgList - if not it must be a path...
+#if( $svg.matches("\w+") && $UtilMethods.isSet( $knownSvgList[$svg] ) )##
+#set( $svg = $knownSvgList[$svg] )##
+#end##
+## CREATE FILE PATH 
+#set( $_filePath = "http://${_domain}" )##
+#if( $svg.indexOf('//') > -1 )##
+#set( $_filePath = "http:" )##
+#end##
+#set( $_filePath = "${_filePath}$!{svg}" )##
+## GET FILE
+#set( $_file = $import.read("$!{_filePath}") )##
+## RENDER HTML
+#if( $UtilMethods.isSet($_file) )##
+#if( $UtilMethods.isSet($attributesObject) )##
+#if( $attributesObject.class.name == 'java.lang.String' )##
+## STRING VALUE
+#elseif( !$!listTool.isArray($attributesObject) )##
+## OBJECT
+#foreach( $property in $attributesObject.keySet() )##
+## remove existing attribute if it is set
+#set( $_searchPattern = "${property}=\"[^\"]*" )##
+#set( $_file = $_file.replaceAll($_searchPattern , '') )##
+## and new attribute value assignment to svg tag
+#if( $UtilMethods.isSet( $attributesObject.get($property) ) )##
+#set( $_file = $_file.replaceAll('<svg', "<svg ${property}='${attributesObject.get($property)}'") )##
+#end##
+#end## foreach $property in $attributesObject
+## render the html
+$_file##
+#end## if not array or string
+#end## if $attributesObject is set
+#end##
+#end## isset $svg
+#end## end printSVG
