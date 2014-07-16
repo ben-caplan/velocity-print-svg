@@ -12,14 +12,14 @@ Then you can just call the SVG in your template where ever you want it to show u
 
 	#printSVG( $path $attributesObject )##
 
-The macro accepts two arguments. The first "$path" can be either an established common name reference for a SVG that you have added to the $knownSvgList in the core code. This is just a short cut for ease of use within your team. You can alternatively pass a string that is the root relative path to your svg. 
+The macro accepts two arguments. The first `$path` can be either an established common name reference for a SVG that you have added to the $knownSvgList in the core code. This is just a short cut for ease of use within your team. You can alternatively pass a string that is the root relative path to your svg. 
 
 	## COMMON NAME
 	#printSVG( 'svgCommonName' )## this will check the list of commonly used SVGs for an available src
 	## ROOT RELATIVE PATH
 	#printSVG( '/common/svg/icon.svg' )## you can also enter a relative path the the desired SVG
 
-The second argument you can pass to the macro is an object of html svg attribute value pairs, like so:
+The second argument you can pass to the macro (`$attributesObject`) is an object of html svg attribute value pairs, like so:
 
 	#printSVG( $path {'height':'200px', 'width':'100%', 'viewBox':''} )
 
